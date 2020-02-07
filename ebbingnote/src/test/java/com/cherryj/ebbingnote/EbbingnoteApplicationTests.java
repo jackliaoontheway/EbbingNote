@@ -3,10 +3,10 @@ package com.cherryj.ebbingnote;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class EbbingnoteApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
