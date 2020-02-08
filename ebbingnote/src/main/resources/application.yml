@@ -6,6 +6,8 @@ spring:
     password: P@55w0rd
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
-    open-in-view: false
+
