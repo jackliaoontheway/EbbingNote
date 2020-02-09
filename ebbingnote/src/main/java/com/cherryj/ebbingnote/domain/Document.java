@@ -39,7 +39,10 @@ public class Document {
     @Column(nullable = false)
     private @Getter @Setter Date createdDate;
 
-    @Column(nullable = false)
+    @Column
     private @Getter @Setter Date modifiedDate;
+
+    @Column
+    private @Getter @Setter Date reviewDate;
 
 }

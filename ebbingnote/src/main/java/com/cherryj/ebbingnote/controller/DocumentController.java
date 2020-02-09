@@ -77,9 +77,26 @@ public class DocumentController extends BaseController {
         return documentService.delete(document);
     }
 
+    @PostMapping("review")
+    public Response<Document> review(Document document) {
+        Response<Document> response = new Response<>();
+        if (document == null) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter is null");
+            return response;
+        }
+
+        if (StringUtils.isEmpty(document.getId())) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter document id is null");
+            return response;
+        }
+
+        return documentService.review(document);
+    }
+
     @PostMapping("list")
     public Response<List<Document>> list(Integer categoryId) {
-
         Response<List<Document>> response = new Response<>();
         if (categoryId == null) {
             response.setStatus(ResponseStatus.RequestParameterError.name());

@@ -7,6 +7,7 @@ import com.cherryj.ebbingnote.domain.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,8 +28,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Response<List<Category>> list(Integer userAccountId) {
         Response<List<Category>> response = new Response<List<Category>>();
+        List<Category> result = new ArrayList();
+        Category reviewCategory = new Category();
+        reviewCategory.setId(-1);
+        reviewCategory.setCategoryName("Review");
+        result.add(reviewCategory);
         List<Category> list = categoryRepository.findByOwnerOrderByCategoryName(userAccountService.findById(userAccountId));
-        response.setData(list);
+        if (list != null) {
+            result.addAll(list);
+        }
+        response.setData(result);
         return response;
     }
 
@@ -42,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Response<Category> modify(Category category) {
         Response<Category> response = new Response<Category>();
-        if(checkCategoryExisted(category.getCategoryName())) {
+        if (checkCategoryExisted(category.getCategoryName())) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
             response.setMsg("Category name is already existed");
             return response;
@@ -58,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Response<Category> create(Category category, Integer userAccountId) {
         Response<Category> response = new Response<Category>();
 
-        if(checkCategoryExisted(category.getCategoryName())) {
+        if (checkCategoryExisted(category.getCategoryName())) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
             response.setMsg("Category name is already existed");
             return response;

@@ -13,4 +13,6 @@ public interface DocumentService {
     Response<List<Document>> listByCategoryId(Integer categoryId);
 
     Response<Boolean> delete(Document document);
+
+    Response<Document> review(Document document);
 }

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -24,6 +25,9 @@ public class Category {
 
     @Column(nullable = false)
     private @Getter @Setter Date createdDate;
+
+    @OneToMany(mappedBy = "category")
+    private @Getter @Setter List<Document> documentList;
 
     public Category() {
     }
