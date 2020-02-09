@@ -16,6 +16,12 @@ public class UserAccount {
     @Column(name = "userName", length = 128)
     private @Getter @Setter String userName;
 
+    /**
+     * 注册时从页面传过来的密码
+     */
+    @Transient
+    private @Getter @Setter String password;
+
     @Column(name = "passwordSalt", length = 64, nullable = false)
     private @Getter @Setter String passwordSalt;
 
