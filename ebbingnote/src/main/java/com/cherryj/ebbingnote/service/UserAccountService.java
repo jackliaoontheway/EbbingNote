@@ -8,4 +8,6 @@ public interface UserAccountService {
     Response<UserAccount> register(UserAccount userAccount);
 
     Response<UserAccount> login(UserAccount userAccount);
+
+    UserAccount findById(Integer userAccountId);
 }

@@ -36,4 +36,7 @@ public class Document {
     @Column(nullable = false)
     private @Getter @Setter Date createdDate;
 
+    @Column(nullable = false)
+    private @Getter @Setter Date modifiedDate;
+
 }

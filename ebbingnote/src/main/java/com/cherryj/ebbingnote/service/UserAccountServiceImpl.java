@@ -55,4 +55,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         response.setData(existedUserAccount);
         return response;
     }
+
+    @Override
+    public UserAccount findById(Integer userAccountId) {
+        return userAccountRepository.findById(userAccountId).get();
+    }
 }

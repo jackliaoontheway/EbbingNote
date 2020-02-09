@@ -6,14 +6,15 @@ import com.cherryj.ebbingnote.domain.UserAccount;
 import com.cherryj.ebbingnote.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/useraccount")
-public class UserAccountController {
+public class UserAccountController extends BaseController {
 
     @Autowired
     private UserAccountService userAccountService;
@@ -45,7 +46,7 @@ public class UserAccountController {
     }
 
     @PostMapping("login")
-    public Response<UserAccount> login(UserAccount userAccount) {
+    public Response<UserAccount> login(UserAccount userAccount, HttpServletRequest request) {
 
         Response<UserAccount> response = new Response<>();
 
@@ -67,7 +68,14 @@ public class UserAccountController {
             return response;
         }
 
-        return userAccountService.login(userAccount);
+        response = userAccountService.login(userAccount);
+
+        //TODO 需要验证 session
+        if (response.getStatus() == null && response.getData() != null) {
+            setCurrentUserAccountId(request,response.getData().getId());
+        }
+
+        return response;
     }
 
 }
