@@ -27,6 +27,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Response<Document> create(Document document, Integer userAccountId) {
         Response<Document> response = new Response<Document>();
+        if(document.getCategoryId() != null) {
+            document.setCategory(categoryService.findById(document.getCategoryId()));
+        }
         document.setCreatedDate(new Date());
         document.setOwner(userAccountService.findById(userAccountId));
         document = documentRepository.save(document);
@@ -37,7 +40,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Response<Document> modify(Document document) {
         Response<Document> response = new Response<Document>();
-        Document existedDocument = documentRepository.findById(document.getId()).get();
+        Document existedDocument = documentRepository.getOne(document.getId());
         existedDocument.setTitle(document.getTitle());
         existedDocument.setContent(document.getContent());
         existedDocument.setModifiedDate(new Date());
@@ -49,7 +52,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Response<Boolean> delete(Document document) {
         Response<Boolean> response = new Response<Boolean>();
-        Document existedDocument = documentRepository.findById(document.getId()).get();
+        Document existedDocument = documentRepository.getOne(document.getId());
         existedDocument.setStatus(DocumentStatus.DELETE.name());
         existedDocument.setModifiedDate(new Date());
         documentRepository.save(existedDocument);

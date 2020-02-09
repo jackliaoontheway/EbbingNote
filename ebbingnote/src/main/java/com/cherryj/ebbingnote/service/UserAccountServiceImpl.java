@@ -58,6 +58,6 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccount findById(Integer userAccountId) {
-        return userAccountRepository.findById(userAccountId).get();
+        return userAccountRepository.getOne(userAccountId);
     }
 }

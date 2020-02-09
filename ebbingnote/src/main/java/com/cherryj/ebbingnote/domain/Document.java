@@ -23,6 +23,9 @@ public class Document {
     @Column(columnDefinition = "text")
     private @Getter @Setter String content;
 
+    @Transient
+    private @Getter @Setter Integer categoryId;
+
     @ManyToOne
     @JoinColumn(name = "categoryId", foreignKey = @ForeignKey(name = "fk_document_category_categoryid"),
             referencedColumnName = "id")
