@@ -18,15 +18,6 @@ public class UserAccountController {
     @Autowired
     private UserAccountService userAccountService;
 
-    @GetMapping("testregister")
-    public Response<UserAccount> register() {
-        UserAccount userAccount = new UserAccount();
-        userAccount.setUserName("Jack");
-        userAccount.setPassword("asdasd123");
-        return register(userAccount);
-    }
-
-
     @PostMapping("register")
     public Response<UserAccount> register(UserAccount userAccount) {
 
@@ -51,6 +42,32 @@ public class UserAccountController {
         }
 
         return userAccountService.register(userAccount);
+    }
+
+    @PostMapping("login")
+    public Response<UserAccount> login(UserAccount userAccount) {
+
+        Response<UserAccount> response = new Response<>();
+
+        if (userAccount == null) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter is null");
+            return response;
+        }
+
+        if (StringUtils.isEmpty(userAccount.getUserName())) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter userName is null");
+            return response;
+        }
+
+        if (StringUtils.isEmpty(userAccount.getPassword())) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter password is null");
+            return response;
+        }
+
+        return userAccountService.login(userAccount);
     }
 
 }
