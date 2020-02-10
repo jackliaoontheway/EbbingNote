@@ -6,14 +6,11 @@ import com.cherryj.ebbingnote.domain.UserAccount;
 import com.cherryj.ebbingnote.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*",maxAge = 360000)
 @RestController
 @RequestMapping("/useraccount")
 public class UserAccountController extends BaseController {
@@ -22,7 +19,7 @@ public class UserAccountController extends BaseController {
     private UserAccountService userAccountService;
 
     @PostMapping("register")
-    public Response<UserAccount> register(UserAccount userAccount) {
+    public Response<UserAccount> register(@RequestBody UserAccount userAccount) {
 
         Response<UserAccount> response = new Response<>();
 
@@ -48,7 +45,7 @@ public class UserAccountController extends BaseController {
     }
 
     @PostMapping("login")
-    public Response<UserAccount> login(UserAccount userAccount, HttpServletRequest request) {
+    public Response<UserAccount> login(@RequestBody UserAccount userAccount, HttpServletRequest request) {
 
         Response<UserAccount> response = new Response<>();
 

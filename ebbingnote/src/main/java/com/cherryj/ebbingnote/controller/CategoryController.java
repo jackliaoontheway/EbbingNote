@@ -6,15 +6,12 @@ import com.cherryj.ebbingnote.domain.Category;
 import com.cherryj.ebbingnote.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*",maxAge = 360000)
 @RestController
 @RequestMapping("/category")
 public class CategoryController extends BaseController {
@@ -23,7 +20,7 @@ public class CategoryController extends BaseController {
     private CategoryService categoryService;
 
     @PostMapping("add")
-    public Response<Category> add(Category category, HttpServletRequest request) {
+    public Response<Category> add(@RequestBody Category category, HttpServletRequest request) {
 
         Response<Category> response = new Response<>();
         if (category == null) {
@@ -42,7 +39,7 @@ public class CategoryController extends BaseController {
     }
 
     @PostMapping("modify")
-    public Response<Category> modify(Category category) {
+    public Response<Category> modify(@RequestBody Category category) {
 
         Response<Category> response = new Response<>();
         if (category == null) {
@@ -61,7 +58,7 @@ public class CategoryController extends BaseController {
     }
 
     @PostMapping("delete")
-    public Response<Boolean> delete(Category category) {
+    public Response<Boolean> delete(@RequestBody Category category) {
 
         Response<Boolean> response = new Response<>();
         if (category == null) {
@@ -80,6 +77,7 @@ public class CategoryController extends BaseController {
     }
 
     @PostMapping("list")
+    //@RequestParam Integer Id
     public Response<List<Category>> list(HttpServletRequest request) {
         Response<List<Category>> response = new Response<List<Category>>();
         Integer userAccountId = getCurrentUserAccountId(request);

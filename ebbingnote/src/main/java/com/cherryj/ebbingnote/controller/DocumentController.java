@@ -6,15 +6,12 @@ import com.cherryj.ebbingnote.domain.Document;
 import com.cherryj.ebbingnote.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*",maxAge = 360000)
 @RestController
 @RequestMapping("/document")
 public class DocumentController extends BaseController {
@@ -23,7 +20,7 @@ public class DocumentController extends BaseController {
     private DocumentService documentService;
 
     @PostMapping("add")
-    public Response<Document> add(Document document, HttpServletRequest request) {
+    public Response<Document> add(@RequestBody Document document, HttpServletRequest request) {
 
         Response<Document> response = new Response<>();
         if (document == null) {
@@ -42,7 +39,7 @@ public class DocumentController extends BaseController {
     }
 
     @PostMapping("modify")
-    public Response<Document> modify(Document document) {
+    public Response<Document> modify(@RequestBody Document document) {
 
         Response<Document> response = new Response<>();
         if (document == null) {
@@ -61,7 +58,7 @@ public class DocumentController extends BaseController {
     }
 
     @PostMapping("delete")
-    public Response<Boolean> delete(Document document) {
+    public Response<Boolean> delete(@RequestBody Document document) {
 
         Response<Boolean> response = new Response<>();
         if (document == null) {
@@ -80,7 +77,7 @@ public class DocumentController extends BaseController {
     }
 
     @PostMapping("review")
-    public Response<Document> review(Document document) {
+    public Response<Document> review(@RequestBody Document document) {
         Response<Document> response = new Response<>();
         if (document == null) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
@@ -98,7 +95,7 @@ public class DocumentController extends BaseController {
     }
 
     @PostMapping("list")
-    public Response<List<Document>> list(Integer categoryId) {
+    public Response<List<Document>> list(@RequestBody Integer categoryId) {
         Response<List<Document>> response = new Response<>();
         if (categoryId == null) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
