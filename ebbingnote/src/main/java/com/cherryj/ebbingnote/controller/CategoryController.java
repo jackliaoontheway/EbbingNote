@@ -6,6 +6,7 @@ import com.cherryj.ebbingnote.domain.Category;
 import com.cherryj.ebbingnote.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/category")
 public class CategoryController extends BaseController {
@@ -79,7 +81,15 @@ public class CategoryController extends BaseController {
 
     @PostMapping("list")
     public Response<List<Category>> list(HttpServletRequest request) {
-        return categoryService.list(getCurrentUserAccountId(request));
+        Response<List<Category>> response = new Response<List<Category>>();
+        Integer userAccountId = getCurrentUserAccountId(request);
+        if(userAccountId == null) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter user has't login in");
+            return response;
+        }
+        response = categoryService.list(userAccountId);
+        return response;
     }
 
 }

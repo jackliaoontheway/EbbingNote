@@ -11,7 +11,8 @@ import java.util.Date;
 public class Document {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private @Getter @Setter int id;
 
     @Column(name = "status", length = 128)

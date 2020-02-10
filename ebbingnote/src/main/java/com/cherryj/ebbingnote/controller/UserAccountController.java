@@ -6,12 +6,14 @@ import com.cherryj.ebbingnote.domain.UserAccount;
 import com.cherryj.ebbingnote.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/useraccount")
 public class UserAccountController extends BaseController {
