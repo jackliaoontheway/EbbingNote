@@ -77,7 +77,7 @@ public class DocumentServiceImpl implements DocumentService {
         Response<List<Document>> response = new Response<List<Document>>();
         List<Document> result = new ArrayList<>();
         //  计算每日复习的 document
-        if(categoryId == -1) {
+        if (categoryId == -1) {
             result = listReviewDocument();
         } else {
             List<Document> list = documentRepository.findByCategoryOrderByModifiedDateDesc(categoryService.findById(categoryId));
@@ -94,27 +94,47 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private List<Document> listReviewDocument() {
-        List<Document>  allDocuments = documentRepository.findAll();
+        // 应该查出前 15天的note， 或者 这里使用日期查询 查多次
+        Calendar calendarForQuery = Calendar.getInstance();
+        calendarForQuery.add(Calendar.DAY_OF_MONTH, -16);
+        List<Document> halfMonthDocuments = documentRepository.findByCreatedDateAfter(calendarForQuery.getTime());
+
         List<Document> result = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
+        String today = getDateStr(calendar);
         // 获取当天,前第一天，前第二天，前第四天，前第七天，前第14天
         List<String> reviewDateStrList = new ArrayList<>();
+        reviewDateStrList.add(today);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
         reviewDateStrList.add(getDateStr(calendar));
-        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        calendar.add(Calendar.DAY_OF_MONTH, -2);
         reviewDateStrList.add(getDateStr(calendar));
-        calendar.add(Calendar.DAY_OF_MONTH,-2);
+        calendar.add(Calendar.DAY_OF_MONTH, -4);
         reviewDateStrList.add(getDateStr(calendar));
-        calendar.add(Calendar.DAY_OF_MONTH,-4);
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
         reviewDateStrList.add(getDateStr(calendar));
-        calendar.add(Calendar.DAY_OF_MONTH,-7);
-        reviewDateStrList.add(getDateStr(calendar));
-        calendar.add(Calendar.DAY_OF_MONTH,-14);
+        calendar.add(Calendar.DAY_OF_MONTH, -14);
         reviewDateStrList.add(getDateStr(calendar));
 
-
-        // 如果状态是review 但是review 日期不是 当天的 将状态改为未复习
+        for (Document note : halfMonthDocuments) {
+            if (reviewDateStrList.contains(getDateStr(note.getCreatedDate()))) {
+                if (DocumentStatus.DELETE.name().equals(note.getStatus())) {
+                    continue;
+                }
+                // 如果状态是review 但是review 日期不是 当天的 将状态改为未复习
+                if (DocumentStatus.REVIEWED.name().equals(note.getStatus()) && !today.equals(getDateStr(note.getReviewDate()))) {
+                    note.setStatus(null);
+                }
+                result.add(note);
+            }
+        }
         return result;
+    }
+
+    private String getDateStr(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(date);
     }
 
     private String getDateStr(Calendar calendar) {
