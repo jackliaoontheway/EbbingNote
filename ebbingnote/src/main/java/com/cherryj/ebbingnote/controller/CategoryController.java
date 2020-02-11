@@ -22,7 +22,7 @@ public class CategoryController extends BaseController {
     private CategoryService categoryService;
 
     @PostMapping("add")
-    public Response<Category> add(@RequestBody Category category, HttpServletRequest request) {
+    public Response<Category> add(@RequestBody Category category) {
 
         Response<Category> response = new Response<>();
         if (category == null) {
@@ -37,7 +37,7 @@ public class CategoryController extends BaseController {
             return response;
         }
 
-        return categoryService.create(category, 1);
+        return categoryService.create(category);
     }
 
     @PostMapping("modify")

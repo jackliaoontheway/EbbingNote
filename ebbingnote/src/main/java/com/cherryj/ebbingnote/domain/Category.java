@@ -23,6 +23,9 @@ public class Category implements Serializable {
     @Column(name = "categoryName", length = 128)
     private @Getter @Setter String categoryName;
 
+    @Transient
+    private @Getter @Setter Integer userAccountId;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ownerId", foreignKey = @ForeignKey(name = "fk_category_useraccount_ownerid"),

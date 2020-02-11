@@ -14,5 +14,5 @@ public interface CategoryService {
 
     Response<Category> modify(Category category);
 
-    Response<Category> create(Category category, Integer currentUserAccountId);
+    Response<Category> create(Category category);
 }

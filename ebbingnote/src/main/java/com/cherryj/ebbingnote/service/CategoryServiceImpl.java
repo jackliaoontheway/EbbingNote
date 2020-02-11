@@ -86,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Response<Category> create(Category category, Integer userAccountId) {
+    public Response<Category> create(Category category) {
         Response<Category> response = new Response<Category>();
 
         if (checkCategoryExisted(category.getCategoryName())) {
@@ -96,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
         Category newCategory = new Category();
         newCategory.setCategoryName(category.getCategoryName());
-        newCategory.setOwner(userAccountService.findById(userAccountId));
+        newCategory.setOwner(userAccountService.findById(category.getUserAccountId()));
         newCategory.setCreatedDate(new Date());
         categoryRepository.save(newCategory);
         response.setData(newCategory);
