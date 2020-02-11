@@ -1,5 +1,6 @@
 package com.cherryj.ebbingnote.controller;
 
+import com.cherryj.ebbingnote.common.model.Request;
 import com.cherryj.ebbingnote.common.model.Response;
 import com.cherryj.ebbingnote.common.model.ResponseStatus;
 import com.cherryj.ebbingnote.domain.Category;
@@ -9,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @CrossOrigin(origins = "*",maxAge = 360000)
@@ -35,7 +37,7 @@ public class CategoryController extends BaseController {
             return response;
         }
 
-        return categoryService.create(category, getCurrentUserAccountId(request));
+        return categoryService.create(category, 1);
     }
 
     @PostMapping("modify")
@@ -77,17 +79,14 @@ public class CategoryController extends BaseController {
     }
 
     @PostMapping("list")
-    //@RequestParam Integer Id
-    public Response<List<Category>> list(HttpServletRequest request) {
+    public Response<List<Category>> list(@RequestBody Request<Integer> request) {
         Response<List<Category>> response = new Response<List<Category>>();
-        Integer userAccountId = getCurrentUserAccountId(request);
-        if(userAccountId == null) {
+        if(request.getData() == null) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
             response.setMsg("Request parameter user has't login in");
             return response;
         }
-        response = categoryService.list(userAccountId);
-        return response;
+        return categoryService.list(request.getData());
     }
 
 }

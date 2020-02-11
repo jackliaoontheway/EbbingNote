@@ -4,6 +4,7 @@ import com.cherryj.ebbingnote.common.model.Response;
 import com.cherryj.ebbingnote.common.model.ResponseStatus;
 import com.cherryj.ebbingnote.domain.Category;
 import com.cherryj.ebbingnote.domain.CategoryRepository;
+import com.cherryj.ebbingnote.domain.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private UserAccountService userAccountService;
 
+    @Autowired
+    private DocumentService documentService;
+
     @Override
     public Category findById(Integer categoryId) {
         return categoryRepository.getOne(categoryId);
@@ -29,14 +33,32 @@ public class CategoryServiceImpl implements CategoryService {
     public Response<List<Category>> list(Integer userAccountId) {
         Response<List<Category>> response = new Response<List<Category>>();
         List<Category> result = new ArrayList();
+
         Category reviewCategory = new Category();
         reviewCategory.setId(-1);
         reviewCategory.setCategoryName("Review");
+        Response<List<Document>> reviewDocumentResponse = documentService.listByCategoryId(-1);
+        if (reviewDocumentResponse != null && reviewDocumentResponse.getData() != null) {
+            reviewCategory.setDocumentList(reviewDocumentResponse.getData());
+        }
+
         result.add(reviewCategory);
+
         List<Category> list = categoryRepository.findByOwnerOrderByCategoryName(userAccountService.findById(userAccountId));
         if (list != null) {
             result.addAll(list);
         }
+
+        // 为了减少内容太多 将内容设空  单独通过id获取Document
+        for (Category category : result) {
+            List<Document> documentList = category.getDocumentList();
+            if (documentList != null) {
+                for (Document document : documentList) {
+                    document.setContent(null);
+                }
+            }
+        }
+
         response.setData(result);
         return response;
     }

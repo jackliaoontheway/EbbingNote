@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @CrossOrigin(origins = "*",maxAge = 360000)
 @RestController
@@ -45,7 +46,7 @@ public class UserAccountController extends BaseController {
     }
 
     @PostMapping("login")
-    public Response<UserAccount> login(@RequestBody UserAccount userAccount, HttpServletRequest request) {
+    public Response<UserAccount> login(@RequestBody UserAccount userAccount) {
 
         Response<UserAccount> response = new Response<>();
 
@@ -68,11 +69,6 @@ public class UserAccountController extends BaseController {
         }
 
         response = userAccountService.login(userAccount);
-
-        //TODO 需要验证 session
-        if (response.getStatus() == null && response.getData() != null) {
-            setCurrentUserAccountId(request,response.getData().getId());
-        }
 
         return response;
     }

@@ -1,14 +1,18 @@
 package com.cherryj.ebbingnote.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "document")
-public class Document {
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" ,"category"})
+public class Document implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +31,13 @@ public class Document {
     @Transient
     private @Getter @Setter Integer categoryId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "categoryId", foreignKey = @ForeignKey(name = "fk_document_category_categoryid"),
             referencedColumnName = "id")
     private @Getter @Setter Category category;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ownerId", foreignKey = @ForeignKey(name = "fk_document_useraccount_ownerid"),
             referencedColumnName = "id")

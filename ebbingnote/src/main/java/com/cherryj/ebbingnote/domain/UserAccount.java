@@ -1,13 +1,16 @@
 package com.cherryj.ebbingnote.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "useraccount")
-public class UserAccount {
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
+public class UserAccount implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

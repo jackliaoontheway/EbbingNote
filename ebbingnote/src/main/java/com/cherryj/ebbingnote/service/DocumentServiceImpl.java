@@ -1,6 +1,7 @@
 package com.cherryj.ebbingnote.service;
 
 import com.cherryj.ebbingnote.common.model.Response;
+import com.cherryj.ebbingnote.domain.Category;
 import com.cherryj.ebbingnote.domain.Document;
 import com.cherryj.ebbingnote.domain.DocumentRepository;
 import com.cherryj.ebbingnote.domain.DocumentStatus;
@@ -24,13 +25,14 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     @Override
-    public Response<Document> create(Document document, Integer userAccountId) {
+    public Response<Document> create(Document document) {
         Response<Document> response = new Response<Document>();
+        Category category = categoryService.findById(document.getCategoryId());
         if (document.getCategoryId() != null) {
-            document.setCategory(categoryService.findById(document.getCategoryId()));
+            document.setCategory(category);
         }
         document.setCreatedDate(new Date());
-        document.setOwner(userAccountService.findById(userAccountId));
+        document.setOwner(category.getOwner());
         document = documentRepository.save(document);
         response.setData(document);
         return response;
@@ -69,6 +71,13 @@ public class DocumentServiceImpl implements DocumentService {
         existedDocument.setModifiedDate(now);
         documentRepository.save(existedDocument);
         response.setData(existedDocument);
+        return response;
+    }
+
+    @Override
+    public Response<Document> findById(Integer id) {
+        Response<Document> response = new Response<Document>();
+        response.setData(documentRepository.getOne(id));
         return response;
     }
 

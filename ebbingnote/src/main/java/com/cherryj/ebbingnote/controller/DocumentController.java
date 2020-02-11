@@ -1,5 +1,6 @@
 package com.cherryj.ebbingnote.controller;
 
+import com.cherryj.ebbingnote.common.model.Request;
 import com.cherryj.ebbingnote.common.model.Response;
 import com.cherryj.ebbingnote.common.model.ResponseStatus;
 import com.cherryj.ebbingnote.domain.Document;
@@ -20,7 +21,7 @@ public class DocumentController extends BaseController {
     private DocumentService documentService;
 
     @PostMapping("add")
-    public Response<Document> add(@RequestBody Document document, HttpServletRequest request) {
+    public Response<Document> add(@RequestBody Document document) {
 
         Response<Document> response = new Response<>();
         if (document == null) {
@@ -35,7 +36,7 @@ public class DocumentController extends BaseController {
             return response;
         }
 
-        return documentService.create(document, getCurrentUserAccountId(request));
+        return documentService.create(document);
     }
 
     @PostMapping("modify")
@@ -94,16 +95,16 @@ public class DocumentController extends BaseController {
         return documentService.review(document);
     }
 
-    @PostMapping("list")
-    public Response<List<Document>> list(@RequestBody Integer categoryId) {
-        Response<List<Document>> response = new Response<>();
-        if (categoryId == null) {
+    @PostMapping("detail")
+    public Response<Document> detail(@RequestBody Request<Integer> request) {
+        Response<Document> response = new Response<>();
+        if (request.getData() == null) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
             response.setMsg("Request parameter is null");
             return response;
         }
 
-        return documentService.listByCategoryId(categoryId);
+        return documentService.findById(request.getData());
     }
 
 }

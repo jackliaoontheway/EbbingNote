@@ -6,7 +6,7 @@ import com.cherryj.ebbingnote.domain.Document;
 import java.util.List;
 
 public interface DocumentService {
-    Response<Document> create(Document document, Integer userAccountId);
+    Response<Document> create(Document document);
 
     Response<Document> modify(Document document);
 
@@ -15,4 +15,6 @@ public interface DocumentService {
     Response<Boolean> delete(Document document);
 
     Response<Document> review(Document document);
+
+    Response<Document> findById(Integer id);
 }
