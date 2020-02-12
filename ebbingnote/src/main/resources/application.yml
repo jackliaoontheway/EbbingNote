@@ -5,7 +5,7 @@ spring:
       active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ebbingnote?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/ebbingnote_test?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
     password: P@55w0rd
   jpa:
@@ -17,7 +17,5 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
 
-#server:
-#  servlet:
-#    context-path: /${spring.application.name}
-#  port: 8080
+server:
+  port: 9090
