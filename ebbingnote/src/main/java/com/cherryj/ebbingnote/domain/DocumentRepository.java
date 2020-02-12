@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DocumentRepository extends JpaRepository<Document, Integer> {
 
-    List<Document> findByCategoryOrderByModifiedDateDesc(Category category);
+    List<Document> findByOwnerAndCategoryOrderByModifiedDateDesc(UserAccount userAccount, Category category);
 
-    List<Document> findByCreatedDateAfter(Date createdDate);
+    List<Document> findByOwnerAndCreatedDateAfter(UserAccount userAccount, Date createdDate);
 }

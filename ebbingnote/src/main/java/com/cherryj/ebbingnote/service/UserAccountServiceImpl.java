@@ -47,11 +47,11 @@ public class UserAccountServiceImpl implements UserAccountService {
             return response;
         }
 
-//        if (!CryptoUtil.validatePassword(existedUserAccount.getPasswordHash(), userAccount.getPassword(), existedUserAccount.getPasswordSalt())) {
-//            response.setStatus(ResponseStatus.RequestParameterError.name());
-//            response.setMsg("Username or password is incorrect.");
-//            return response;
-//        }
+        if (!CryptoUtil.validatePassword(existedUserAccount.getPasswordHash(), userAccount.getPassword(), existedUserAccount.getPasswordSalt())) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Username or password is incorrect.");
+            return response;
+        }
         response.setData(existedUserAccount);
         return response;
     }

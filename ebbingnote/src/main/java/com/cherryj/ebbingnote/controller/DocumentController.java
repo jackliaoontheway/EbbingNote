@@ -36,6 +36,12 @@ public class DocumentController extends BaseController {
             return response;
         }
 
+        if(document.getCategoryId() == null || document.getCategoryId() == -1) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter categoryId error");
+            return response;
+        }
+
         return documentService.create(document);
     }
 

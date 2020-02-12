@@ -5,6 +5,7 @@ import com.cherryj.ebbingnote.common.model.ResponseStatus;
 import com.cherryj.ebbingnote.domain.Category;
 import com.cherryj.ebbingnote.domain.CategoryRepository;
 import com.cherryj.ebbingnote.domain.Document;
+import com.cherryj.ebbingnote.domain.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private DocumentService documentService;
 
+    private final static Integer REVIEW_CATEGORY_ID = -1;
+
     @Override
     public Category findById(Integer categoryId) {
         return categoryRepository.getOne(categoryId);
@@ -33,18 +36,19 @@ public class CategoryServiceImpl implements CategoryService {
     public Response<List<Category>> list(Integer userAccountId) {
         Response<List<Category>> response = new Response<List<Category>>();
         List<Category> result = new ArrayList();
+        UserAccount userAccount = userAccountService.findById(userAccountId);
 
         Category reviewCategory = new Category();
-        reviewCategory.setId(-1);
+        reviewCategory.setId(REVIEW_CATEGORY_ID);
         reviewCategory.setCategoryName("Review");
-        Response<List<Document>> reviewDocumentResponse = documentService.listByCategoryId(-1);
+        Response<List<Document>> reviewDocumentResponse = documentService.listByCategoryId(userAccount, REVIEW_CATEGORY_ID);
         if (reviewDocumentResponse != null && reviewDocumentResponse.getData() != null) {
             reviewCategory.setDocumentList(reviewDocumentResponse.getData());
         }
 
         result.add(reviewCategory);
 
-        List<Category> list = categoryRepository.findByOwnerOrderByCategoryName(userAccountService.findById(userAccountId));
+        List<Category> list = categoryRepository.findByOwnerOrderByCategoryName(userAccount);
         if (list != null) {
             result.addAll(list);
         }

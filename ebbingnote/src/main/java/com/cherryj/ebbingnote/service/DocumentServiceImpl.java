@@ -1,10 +1,7 @@
 package com.cherryj.ebbingnote.service;
 
 import com.cherryj.ebbingnote.common.model.Response;
-import com.cherryj.ebbingnote.domain.Category;
-import com.cherryj.ebbingnote.domain.Document;
-import com.cherryj.ebbingnote.domain.DocumentRepository;
-import com.cherryj.ebbingnote.domain.DocumentStatus;
+import com.cherryj.ebbingnote.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,14 +79,14 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Response<List<Document>> listByCategoryId(Integer categoryId) {
+    public Response<List<Document>> listByCategoryId(UserAccount userAccount, Integer categoryId) {
         Response<List<Document>> response = new Response<List<Document>>();
         List<Document> result = new ArrayList<>();
         //  计算每日复习的 document
         if (categoryId == -1) {
-            result = listReviewDocument();
+            result = listReviewDocument(userAccount);
         } else {
-            List<Document> list = documentRepository.findByCategoryOrderByModifiedDateDesc(categoryService.findById(categoryId));
+            List<Document> list = documentRepository.findByOwnerAndCategoryOrderByModifiedDateDesc(userAccount, categoryService.findById(categoryId));
             if (list != null && list.size() > 0) {
                 for (Document document : list) {
                     if (!DocumentStatus.DELETE.name().equals(document.getStatus())) {
@@ -102,11 +99,11 @@ public class DocumentServiceImpl implements DocumentService {
         return response;
     }
 
-    private List<Document> listReviewDocument() {
+    private List<Document> listReviewDocument(UserAccount userAccount) {
         // 应该查出前 15天的note， 或者 这里使用日期查询 查多次
         Calendar calendarForQuery = Calendar.getInstance();
         calendarForQuery.add(Calendar.DAY_OF_MONTH, -16);
-        List<Document> halfMonthDocuments = documentRepository.findByCreatedDateAfter(calendarForQuery.getTime());
+        List<Document> halfMonthDocuments = documentRepository.findByOwnerAndCreatedDateAfter(userAccount, calendarForQuery.getTime());
 
         List<Document> result = new ArrayList<>();
 
