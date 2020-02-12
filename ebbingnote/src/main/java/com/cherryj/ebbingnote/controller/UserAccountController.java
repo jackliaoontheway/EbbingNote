@@ -1,5 +1,6 @@
 package com.cherryj.ebbingnote.controller;
 
+import com.cherryj.ebbingnote.common.model.Request;
 import com.cherryj.ebbingnote.common.model.Response;
 import com.cherryj.ebbingnote.common.model.ResponseStatus;
 import com.cherryj.ebbingnote.domain.UserAccount;
@@ -67,6 +68,20 @@ public class UserAccountController extends BaseController {
 
         response = userAccountService.login(userAccount);
 
+        return response;
+    }
+
+    @PostMapping("getCurrentUser")
+    public Response<UserAccount> getCurrentUser(@RequestBody Request<Integer> userAccountId) {
+        Response<UserAccount> response = new Response<>();
+
+        if (userAccountId == null || userAccountId.getData() == null) {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Request parameter is null");
+            return response;
+        }
+
+        response.setData(userAccountService.findById(userAccountId.getData()));
         return response;
     }
 
