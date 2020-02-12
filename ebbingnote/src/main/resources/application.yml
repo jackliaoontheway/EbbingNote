@@ -17,6 +17,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
 
-server:
-  servlet:
-    context-path: /${spring.application.name}
+#server:
+#  servlet:
+#    context-path: /${spring.application.name}
+#  port: 8080
