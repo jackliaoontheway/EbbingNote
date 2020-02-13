@@ -2,10 +2,7 @@ package com.cherryj.ebbingnote.service;
 
 import com.cherryj.ebbingnote.common.model.Response;
 import com.cherryj.ebbingnote.common.model.ResponseStatus;
-import com.cherryj.ebbingnote.domain.Category;
-import com.cherryj.ebbingnote.domain.CategoryRepository;
-import com.cherryj.ebbingnote.domain.Document;
-import com.cherryj.ebbingnote.domain.UserAccount;
+import com.cherryj.ebbingnote.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,13 +51,20 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         // 为了减少内容太多 将内容设空  单独通过id获取Document
+        // 将DELETE 过滤掉
         for (Category category : result) {
             List<Document> documentList = category.getDocumentList();
+            List<Document> filterDeletedList = new ArrayList<>();
             if (documentList != null) {
                 for (Document document : documentList) {
+                    if (DocumentStatus.DELETE.name().equals(document.getStatus())) {
+                        continue;
+                    }
                     document.setContent(null);
+                    filterDeletedList.add(document);
                 }
             }
+            category.setDocumentList(filterDeletedList);
         }
 
         response.setData(result);
@@ -77,7 +81,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Response<Category> modify(Category category) {
         Response<Category> response = new Response<Category>();
-        if (checkCategoryExisted(category.getCategoryName())) {
+
+        UserAccount userAccount = userAccountService.findById(category.getUserAccountId());
+
+        if (checkCategoryExisted(userAccount, category.getCategoryName())) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
             response.setMsg("Category name is already existed");
             return response;
@@ -93,21 +100,23 @@ public class CategoryServiceImpl implements CategoryService {
     public Response<Category> create(Category category) {
         Response<Category> response = new Response<Category>();
 
-        if (checkCategoryExisted(category.getCategoryName())) {
+        UserAccount userAccount = userAccountService.findById(category.getUserAccountId());
+
+        if (checkCategoryExisted(userAccount, category.getCategoryName())) {
             response.setStatus(ResponseStatus.RequestParameterError.name());
             response.setMsg("Category name is already existed");
             return response;
         }
         Category newCategory = new Category();
         newCategory.setCategoryName(category.getCategoryName());
-        newCategory.setOwner(userAccountService.findById(category.getUserAccountId()));
+        newCategory.setOwner(userAccount);
         newCategory.setCreatedDate(new Date());
         categoryRepository.save(newCategory);
         response.setData(newCategory);
         return response;
     }
 
-    private boolean checkCategoryExisted(String categoryName) {
-        return (categoryRepository.findFirstByCategoryName(categoryName)) != null;
+    private boolean checkCategoryExisted(UserAccount userAccount, String categoryName) {
+        return (categoryRepository.findFirstByOwnerAndCategoryName(userAccount, categoryName)) != null;
     }
 }

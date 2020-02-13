@@ -9,5 +9,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findByOwnerOrderByCategoryName(UserAccount userAccount);
 
-    Category findFirstByCategoryName(String categoryName);
+    Category findFirstByOwnerAndCategoryName(UserAccount userAccount, String categoryName);
 }
