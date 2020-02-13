@@ -47,7 +47,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<Category> list = categoryRepository.findByOwnerOrderByCategoryName(userAccount);
         if (list != null) {
-            result.addAll(list);
+            for (Category category : list) {
+                if (CategoryStatus.DELETE.name().equals(category.getStatus())) {
+                    continue;
+                }
+                result.add(category);
+            }
         }
 
         // 为了减少内容太多 将内容设空  单独通过id获取Document
@@ -74,7 +79,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Response<Boolean> delete(Category category) {
         Response<Boolean> response = new Response<Boolean>();
-        categoryRepository.delete(categoryRepository.getOne(category.getId()));
+        Category existedCategory = categoryRepository.getOne(category.getId());
+        existedCategory.setStatus(CategoryStatus.DELETE.name());
+        existedCategory.setModifiedDate(new Date());
+        categoryRepository.save(existedCategory);
         response.setData(true);
         return response;
     }
@@ -85,16 +93,35 @@ public class CategoryServiceImpl implements CategoryService {
 
         UserAccount userAccount = userAccountService.findById(category.getUserAccountId());
 
-        if (checkCategoryExisted(userAccount, category.getCategoryName())) {
-            response.setStatus(ResponseStatus.RequestParameterError.name());
-            response.setMsg("Category name is already existed");
+        response = checkCategoryExisted(userAccount, category);
+        if (response != null) {
             return response;
         }
+        response = new Response<Category>();
+
         Category existedCategory = categoryRepository.getOne(category.getId());
         existedCategory.setCategoryName(category.getCategoryName());
         categoryRepository.save(existedCategory);
         response.setData(existedCategory);
         return response;
+    }
+
+    private Response<Category> checkCategoryExisted(UserAccount userAccount, Category category) {
+        Response<Category> response = new Response<Category>();
+        Category existedCategory = categoryRepository.findFirstByOwnerAndCategoryName(userAccount, category.getCategoryName());
+        if (existedCategory != null) {
+            if (CategoryStatus.DELETE.name().equals(category.getStatus())) {
+                existedCategory.setStatus(CategoryStatus.RESET.name());
+                categoryRepository.save(existedCategory);
+                response.setData(existedCategory);
+                return response;
+            } else {
+                response.setStatus(ResponseStatus.RequestParameterError.name());
+                response.setMsg("Category name is already existed");
+                return response;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -103,21 +130,19 @@ public class CategoryServiceImpl implements CategoryService {
 
         UserAccount userAccount = userAccountService.findById(category.getUserAccountId());
 
-        if (checkCategoryExisted(userAccount, category.getCategoryName())) {
-            response.setStatus(ResponseStatus.RequestParameterError.name());
-            response.setMsg("Category name is already existed");
+        response = checkCategoryExisted(userAccount, category);
+        if (response != null) {
             return response;
         }
+        response = new Response<Category>();
+
         Category newCategory = new Category();
         newCategory.setCategoryName(category.getCategoryName());
         newCategory.setOwner(userAccount);
         newCategory.setCreatedDate(new Date());
         categoryRepository.save(newCategory);
+
         response.setData(newCategory);
         return response;
-    }
-
-    private boolean checkCategoryExisted(UserAccount userAccount, String categoryName) {
-        return (categoryRepository.findFirstByOwnerAndCategoryName(userAccount, categoryName)) != null;
     }
 }

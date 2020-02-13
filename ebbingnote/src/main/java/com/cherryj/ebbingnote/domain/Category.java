@@ -20,6 +20,9 @@ public class Category implements Serializable {
     @Column
     private @Getter @Setter int id;
 
+    @Column(name = "status", length = 128)
+    private @Getter @Setter String status;
+
     @Column(name = "categoryName", length = 128)
     private @Getter @Setter String categoryName;
 
@@ -34,6 +37,9 @@ public class Category implements Serializable {
 
     @Column(nullable = false)
     private @Getter @Setter Date createdDate;
+
+    @Column
+    private @Getter @Setter Date modifiedDate;
 
     @OneToMany(mappedBy = "category")
     private @Getter @Setter List<Document> documentList;
