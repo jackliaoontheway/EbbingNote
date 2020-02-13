@@ -75,6 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Response<Boolean> delete(Category category) {
         Response<Boolean> response = new Response<Boolean>();
         categoryRepository.delete(categoryRepository.getOne(category.getId()));
+        response.setData(true);
         return response;
     }
 
