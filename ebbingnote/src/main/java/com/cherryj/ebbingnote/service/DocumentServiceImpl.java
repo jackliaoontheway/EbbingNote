@@ -114,20 +114,20 @@ public class DocumentServiceImpl implements DocumentService {
         reviewDateStrList.add(today);
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         reviewDateStrList.add(getDateStr(calendar));
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        reviewDateStrList.add(getDateStr(calendar));
         calendar.add(Calendar.DAY_OF_MONTH, -2);
         reviewDateStrList.add(getDateStr(calendar));
-        calendar.add(Calendar.DAY_OF_MONTH, -4);
+        calendar.add(Calendar.DAY_OF_MONTH, -3);
         reviewDateStrList.add(getDateStr(calendar));
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         reviewDateStrList.add(getDateStr(calendar));
-        calendar.add(Calendar.DAY_OF_MONTH, -14);
-        reviewDateStrList.add(getDateStr(calendar));
 
         for (Document note : halfMonthDocuments) {
+            if (DocumentStatus.DELETE.name().equals(note.getStatus())) {
+                continue;
+            }
             if (reviewDateStrList.contains(getDateStr(note.getCreatedDate()))) {
-                if (DocumentStatus.DELETE.name().equals(note.getStatus())) {
-                    continue;
-                }
                 // 如果状态是review 但是review 日期不是 当天的 将状态改为未复习
                 if (DocumentStatus.REVIEWED.name().equals(note.getStatus()) && !today.equals(getDateStr(note.getReviewDate()))) {
                     note.setStatus(null);
