@@ -1,6 +1,7 @@
 package com.cherryj.ebbingnote.service;
 
 import com.cherryj.ebbingnote.common.model.Response;
+import com.cherryj.ebbingnote.common.model.ResponseStatus;
 import com.cherryj.ebbingnote.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,12 @@ public class DocumentServiceImpl implements DocumentService {
     public Response<Document> create(Document document) {
         Response<Document> response = new Response<Document>();
         Category category = categoryService.findById(document.getCategoryId());
-        if (document.getCategoryId() != null) {
+        if (category != null) {
             document.setCategory(category);
+        } else {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Category is null");
+            return response;
         }
         document.setCreatedDate(new Date());
         document.setOwner(category.getOwner());
@@ -39,6 +44,14 @@ public class DocumentServiceImpl implements DocumentService {
     public Response<Document> modify(Document document) {
         Response<Document> response = new Response<Document>();
         Document existedDocument = documentRepository.getOne(document.getId());
+        Category category = categoryService.findById(document.getCategoryId());
+        if (category != null) {
+            existedDocument.setCategory(category);
+        } else {
+            response.setStatus(ResponseStatus.RequestParameterError.name());
+            response.setMsg("Category is null");
+            return response;
+        }
         existedDocument.setTitle(document.getTitle());
         existedDocument.setContent(document.getContent());
         existedDocument.setModifiedDate(new Date());
@@ -74,7 +87,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Response<Document> findById(Integer id) {
         Response<Document> response = new Response<Document>();
-        response.setData(documentRepository.getOne(id));
+        Document document = documentRepository.getOne(id);
+        document.setCategoryId(document.getCategory().getId());
+        response.setData(document);
         return response;
     }
 
