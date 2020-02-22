@@ -110,7 +110,7 @@ public class CategoryServiceImpl implements CategoryService {
         Response<Category> response = new Response<Category>();
         Category existedCategory = categoryRepository.findFirstByOwnerAndCategoryName(userAccount, category.getCategoryName());
         if (existedCategory != null) {
-            if (CategoryStatus.DELETE.name().equals(category.getStatus())) {
+            if (CategoryStatus.DELETE.name().equals(existedCategory.getStatus())) {
                 existedCategory.setStatus(CategoryStatus.RESET.name());
                 categoryRepository.save(existedCategory);
                 response.setData(existedCategory);
